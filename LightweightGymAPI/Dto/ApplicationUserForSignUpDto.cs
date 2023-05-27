@@ -13,10 +13,10 @@ namespace LightweightGymAPI.Dto
         public string Email { get; set; }
         [Required]
         [Compare("ConfirmPassword")]
-        [StringLength(6, MinimumLength = 6)]
+        [StringLength(8, MinimumLength = 8)]
         public string Password { get; set; }
         [Required]
-        [StringLength(6, MinimumLength = 6)]
+        [StringLength(8, MinimumLength = 8)]
         public string ConfirmPassword { get; set; }
     }
 }
