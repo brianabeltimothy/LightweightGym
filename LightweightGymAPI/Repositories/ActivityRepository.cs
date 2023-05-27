@@ -6,26 +6,37 @@ namespace LightweightGymAPI.Repositories
 {
     public class ActivityRepository : IActivityRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _dbContext;
 
-        public ActivityRepository(ApplicationDbContext context)
+        public ActivityRepository(ApplicationDbContext dbContext)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _dbContext = dbContext;
         }
 
-        public async Task<Entities.Activity> GetAsync(int activityId)
+        public async Task<IEnumerable<Activity>> GetAllAsync()
         {
-            return await _context.Activities.FirstOrDefaultAsync(x => x.ActivityId == activityId);
+            return await _dbContext.Activities.ToListAsync();
         }
 
-        public async Task<IEnumerable<Entities.Activity>> GetAllAsync()
+        public async Task<Activity> GetAsync(int activityId)
         {
-            return await _context.Activities.ToListAsync();
+            return await _dbContext.Activities.FindAsync(activityId);
         }
 
-        public Task<Activity> GetAsync(Guid contractorId)
+        public void Add(Activity activity)
         {
-            throw new NotImplementedException();
+            _dbContext.Activities.Add(activity);
+        }
+
+        public void Delete(Activity activity)
+        {
+            _dbContext.Activities.Remove(activity);
+        }
+
+        public async Task SaveAsync()
+        {
+            await _dbContext.SaveChangesAsync();
         }
     }
+
 }

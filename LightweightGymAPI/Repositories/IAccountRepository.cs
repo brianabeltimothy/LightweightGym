@@ -7,5 +7,9 @@ namespace LightweightGymAPI.Repositories
     public interface IAccountRepository
     {
         Task<IdentityResult> SignUpAsync(ApplicationUserForSignUpDto signUp);
+
+        Task<bool> SignInAsync(ApplicationUserForSignInDto signIn);
+
+        Task<IEnumerable<ApplicationUser>> GetAllAsync();
     }
 }

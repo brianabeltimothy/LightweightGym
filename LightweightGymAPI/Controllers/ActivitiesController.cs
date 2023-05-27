@@ -40,5 +40,17 @@ namespace LightweightGymAPI.Controllers
 
             return Ok(_mapper.Map<ActivityDto>(activity));
         }
+
+        [HttpPost]
+        public async Task<ActionResult<ActivityDto>> CreateActivity(ActivityDto newActivity)
+        {
+            var activity = _mapper.Map<Entities.Activity>(newActivity);
+
+            _activityRepository.Add(activity);
+            await _activityRepository.SaveAsync();
+
+            var createdActivityDto = _mapper.Map<ActivityDto>(activity);
+            return CreatedAtAction(nameof(GetActivity), new { activityId = createdActivityDto.ActivityId }, createdActivityDto);
+        }
     }
 }
