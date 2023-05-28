@@ -8,7 +8,7 @@ using LightweightGymAPI.Dto;
 
 namespace LightweightGymAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/accounts")]
     [ApiController]
     public class AccountsController : ControllerBase
     {

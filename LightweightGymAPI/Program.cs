@@ -3,6 +3,7 @@ using LightweightGymAPI.Entities;
 using LightweightGymAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -36,6 +36,23 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = new FileExtensionContentTypeProvider(new Dictionary<string, string>
+    {
+        { ".js", "application/javascript" }
+    })
+});
+
+app.UseRouting();
+
+app.UseCors(builder =>
+{
+    builder.WithOrigins("http://127.0.0.1:5500")
+           .AllowAnyHeader()
+           .AllowAnyMethod();
+});
 
 app.UseAuthorization();
 

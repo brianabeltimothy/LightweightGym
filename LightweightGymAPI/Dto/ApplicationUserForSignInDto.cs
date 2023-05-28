@@ -7,7 +7,7 @@ namespace LightweightGymAPI.Dto
         [EmailAddress]
         public string Email { get; set; }
         [Required]
-        [StringLength(8, MinimumLength = 8)]
+        [StringLength(20, MinimumLength = 8, ErrorMessage = "The password must be between 8 and 20 characters.")]
         public string Password { get; set; }
     }
 }
