@@ -41,7 +41,7 @@ namespace LightweightGymAPI.Controllers
             return Ok(userDtos);
         }
 
-        [HttpGet("{email}")]
+        [HttpGet("user")]
         public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -52,11 +52,12 @@ namespace LightweightGymAPI.Controllers
 
             // Return the user data
             return Ok(user);
-}
+        }
+
 
 
         [HttpPost("signup")]
-        public async Task<ActionResult<IdentityResult>> SignUp([FromBody] ApplicationUserForSignUpDto signUp)
+        public async Task<ActionResult> SignUp([FromBody] ApplicationUserForSignUpDto signUp)
         {
             var result = await _accountRepository.SignUpAsync(signUp);
 
@@ -65,7 +66,9 @@ namespace LightweightGymAPI.Controllers
                 return Ok(result.Succeeded);
             }
 
-            return Unauthorized();
+            // Error occurred during sign-up, return the error messages
+            var errorMessages = result.Errors.Select(error => error.Description);
+            return BadRequest(errorMessages);
         }
 
         [HttpPost("signin")]
