@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using LightweightGymAPI.Dto;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LightweightGymAPI.Controllers
 {
@@ -14,11 +16,15 @@ namespace LightweightGymAPI.Controllers
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IMapper _mapper;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AccountsController(IAccountRepository accountRepository, IMapper mapper)
+        public AccountsController(UserManager<ApplicationUser> userManager, IAccountRepository accountRepository, IMapper mapper, SignInManager<ApplicationUser> signInManager)
         {
             _accountRepository = accountRepository;
             _mapper = mapper;
+            _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -34,6 +40,19 @@ namespace LightweightGymAPI.Controllers
             var userDtos = _mapper.Map<IEnumerable<ApplicationUser>>(users);
             return Ok(userDtos);
         }
+
+        [HttpGet("{email}")]
+        public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Return the user data
+            return Ok(user);
+}
 
 
         [HttpPost("signup")]
@@ -64,5 +83,13 @@ namespace LightweightGymAPI.Controllers
             return Unauthorized();
         }
 
+        [HttpPost("signout")]
+        [Authorize]
+        public async Task<IActionResult> SignOut()
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+
+            return Ok();
+        }
     }
 }

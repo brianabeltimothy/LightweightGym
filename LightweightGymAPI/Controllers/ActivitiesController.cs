@@ -20,7 +20,6 @@ namespace LightweightGymAPI.Controllers
         }
 
         [HttpGet]
-        [HttpHead]
         public async Task<ActionResult<IEnumerable<Entities.Activity>>> GetAll()
         {
             var activities = await _activityRepository.GetAllAsync();

@@ -18,6 +18,13 @@ namespace LightweightGymAPI.Repositories
 
         public async Task<IdentityResult> SignUpAsync(ApplicationUserForSignUpDto signUp)
         {
+            var existingUser = await _userManager.FindByEmailAsync(signUp.Email);
+            if (existingUser != null)
+            {
+                // Email address is already taken, return an error
+                return IdentityResult.Failed(new IdentityError { Description = "Email address is already in use." });
+            }
+            
             var user = new ApplicationUser()
             {
                 FirstName = signUp.FirstName,
