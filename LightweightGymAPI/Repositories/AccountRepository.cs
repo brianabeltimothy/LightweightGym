@@ -1,4 +1,5 @@
-﻿using LightweightGymAPI.Dto;
+﻿using LightweightGymAPI.DbContext;
+using LightweightGymAPI.Dto;
 using LightweightGymAPI.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,13 @@ namespace LightweightGymAPI.Repositories
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _dbContext;
 
-        public AccountRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _dbContext = dbContext;
         }
 
         public async Task<IdentityResult> SignUpAsync(ApplicationUserForSignUpDto signUp)
@@ -48,5 +51,11 @@ namespace LightweightGymAPI.Repositories
             var users = await _userManager.Users.ToListAsync();
             return users;
         }
+
+        public async Task<ApplicationUser> FindByEmailAsync(string email)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
     }
 }

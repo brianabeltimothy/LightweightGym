@@ -11,5 +11,6 @@ namespace LightweightGymAPI.Repositories
         Task<bool> SignInAsync(ApplicationUserForSignInDto signIn);
 
         Task<IEnumerable<ApplicationUser>> GetAllAsync();
+        Task<ApplicationUser> FindByEmailAsync(string email);
     }
 }
